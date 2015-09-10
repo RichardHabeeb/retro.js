@@ -34,9 +34,10 @@ define(['jquery'], function ($) {
         };
 
         that.draw = function (elapsedTimeSeconds) {
-            that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
             for(var i = 0; i < sprites.length; i++) {
-                sprites[i].draw(that.context);
+                if(sprites[i].visible(sizeVector)) {
+                    sprites[i].draw(that.context);
+                }
             }
         };
 
