@@ -2,8 +2,8 @@ define(function (require) {
     var Vector = require('./Vector');
     var Settings = require('./Settings');
     var Layer = require('./Layer');
-    var layers = [];
 
+    var layers = [];
     for(var i = 0; i < Settings.numberOfLayers; i++)
     {
         layers.push(Layer(document.body, Settings.canvasSize, Settings.canvasScale));
