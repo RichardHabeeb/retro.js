@@ -5,6 +5,7 @@ define(['jquery'], function ($) {
         var sprites = [];
 
         that.context = domElement.getContext('2d');
+        that.tileMap = undefined;
 
         /* Setup scaled canvas styling and let the browser choose the acceptable method. */
         domElement.setAttribute('style',
@@ -34,6 +35,9 @@ define(['jquery'], function ($) {
         };
 
         that.draw = function (elapsedTimeSeconds) {
+            if(typeof that.tileMap !== "undefined") {
+                that.tileMap.draw(that.context);
+            }
             for(var i = 0; i < sprites.length; i++) {
                 if(sprites[i].visible(sizeVector)) {
                     sprites[i].draw(that.context);
