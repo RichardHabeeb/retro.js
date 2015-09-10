@@ -2,6 +2,7 @@ define(['jquery'], function ($) {
     return function (parent, sizeVector, scale) {
         var that = {};
         var domElement = document.createElement('canvas');
+        var sprites = [];
 
         that.context = domElement.getContext('2d');
 
@@ -27,6 +28,17 @@ define(['jquery'], function ($) {
             'position': 'absolute',
         });
         parent.appendChild(domElement);
+
+        that.attachSprite = function (sprite) {
+            sprites.push(sprite);
+        };
+
+        that.draw = function (elapsedTimeSeconds) {
+            that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
+            for(var i = 0; i < sprites.length; i++) {
+                sprites[i].draw(that.context);
+            }
+        };
 
         return that;
     };
