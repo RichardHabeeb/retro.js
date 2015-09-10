@@ -29,10 +29,12 @@ define(function (require) {
         /*
         update position code here, every frame
         */
+        jelly2.position.x -= 10 * elapsedTimeSeconds;
 
         for(var i = 0; i < layers.length; i++) {
             layers[i].draw(elapsedTimeSeconds);
         }
+        previousTimeStamp = timeStamp;
         window.requestAnimationFrame(loop);
     };
     window.requestAnimationFrame(loop);
