@@ -35,9 +35,14 @@ define(['jquery'], function ($) {
         };
 
         that.draw = function (elapsedTimeSeconds) {
+            /* This seems ok here. We may need to selectively clear to improve performance. */
+            that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
+
+            /* TileMaps and generic sprites should probably be on different layers but that it up to the developer. */
             if(typeof that.tileMap !== "undefined") {
                 that.tileMap.draw(that.context);
             }
+
             for(var i = 0; i < sprites.length; i++) {
                 if(sprites[i].visible(sizeVector)) {
                     sprites[i].draw(that.context);
