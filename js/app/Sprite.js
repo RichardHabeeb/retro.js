@@ -41,7 +41,7 @@ define(['app/Vector'], function(Vector) {
         };
 
         that.draw = function(context, elapsedTimeSeconds) {
-            if(that.size.x === 0) return;
+            if(that.size.x === 0) return false;
             if(animationTimeSeconds > 0) {
                 that.position.x += velocity.x * elapsedTimeSeconds;
                 that.position.y += velocity.y * elapsedTimeSeconds;
@@ -86,8 +86,10 @@ define(['app/Vector'], function(Vector) {
                     frameWidth,
                     roundedSize.y);
                 context.restore();
+                return true;
             }
 
+            return false;
         };
 
         img.onload = function() {

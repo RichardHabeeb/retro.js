@@ -4,7 +4,8 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
 
         var layers = [];
         for(var i = 0; i < Settings.numberOfLayers; i++) {
-            layers.push(Layer(document.body, Settings.canvasSize, Settings.canvasScale));
+            layers.push(Layer(document.body, Settings.canvasSize, Settings.canvasScale, Settings.drawableAreaSize));
+            layers[i].setZ(i);
         }
 
         var jelly = Sprite("img/Jelly.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y));
@@ -23,16 +24,24 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
             3, 3, 3, 3, 3, 3, 3, 3,
             2, 2, 2, 2, 2, 2, 2, 2,
             2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            3, 3, 3, 3, 3, 3, 3, 3,
             2, 2, 2, 2, 2, 2, 2, 2,
             2, 2, 2, 2, 2, 2, 2, 2,
         ], Settings.numTiles);
 
         layers[0].attachDrawable(tileMap);
 
+        that.moveAll = function(offset) {
+            for(var i = 0; i < layers.length; i++) {
+                layers[i].position.x = Math.min(0, Math.max(Settings.canvasSize.x - Settings.drawableAreaSize.x, layers[i].position.x + offset.x));
+                layers[i].position.y = Math.min(0, Math.max(Settings.canvasSize.y - Settings.drawableAreaSize.y, layers[i].position.y + offset.y));
+            }
+        };
+
         that.draw = function(elapsedTimeSeconds) {
             jelly2.position.x -= 10 * elapsedTimeSeconds;
+            that.moveAll(Vector(-20 * elapsedTimeSeconds, -20 * elapsedTimeSeconds));
 
             for(var i = 0; i < layers.length; i++) {
                 layers[i].draw(elapsedTimeSeconds);

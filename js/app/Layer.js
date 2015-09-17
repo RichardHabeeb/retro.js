@@ -1,11 +1,14 @@
-define(['jquery'], function ($) {
-    return function (parent, sizeVector, scale) {
+define(['jquery', 'app/Vector'], function ($, Vector) {
+    return function (parent, visibleSizeVector, scale, sizeVector) {
         var that = {};
+        var preRenderedCanvas = document.createElement('canvas');
+        var preRenderedContext = preRenderedCanvas.getContext('2d');
         var domElement = document.createElement('canvas');
         var sprites = [];
+        var previousPosition = null;
 
+        that.position = Vector();
         that.context = domElement.getContext('2d');
-        that.tileMap = undefined;
 
         /* Setup scaled canvas styling and let the browser choose the acceptable method. */
         domElement.setAttribute('style',
@@ -19,19 +22,24 @@ define(['jquery'], function ($) {
 
         /* setting base size */
         $(domElement).attr({
-            'width': sizeVector.x,
-            'height': sizeVector.y,
+            'width': visibleSizeVector.x,
+            'height': visibleSizeVector.y,
         });
         /* setting scaled size */
         $(domElement).css({
-            'width': sizeVector.x * scale + 'px',
-            'height': sizeVector.y * scale + 'px',
+            'width': visibleSizeVector.x * scale + 'px',
+            'height': visibleSizeVector.y * scale + 'px',
             'position': 'absolute',
             'top': '50%',
             'left': '50%',
-            'margin-left': -sizeVector.x * scale/2 + 'px',
-            'margin-top': -sizeVector.y * scale/2 + 'px',
+            'margin-left': -visibleSizeVector.x * scale/2 + 'px',
+            'margin-top': -visibleSizeVector.y * scale/2 + 'px',
         });
+        $(preRenderedCanvas).attr({
+            'width': sizeVector.x,
+            'height': sizeVector.y,
+        });
+
         parent.appendChild(domElement);
 
         that.attachDrawable = function (sprite) {
@@ -44,21 +52,30 @@ define(['jquery'], function ($) {
         };
 
         that.draw = function (elapsedTimeSeconds) {
-            /* if a TileMap is specified, the other sprites aren't drawn. */
-            if(typeof that.tileMap !== "undefined") {
-                that.tileMap.draw(that.context);
+            var redraw = false;
+            for(var i = 0; i < sprites.length; i++) {
+                redraw = redraw || sprites[i].draw(preRenderedContext, elapsedTimeSeconds);
             }
-            else {
-                //that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
-                for(var i = 0; i < sprites.length; i++) {
-                    sprites[i].draw(that.context, elapsedTimeSeconds);
-                }
+            var roundedPosition = Vector(~~that.position.x, ~~that.position.y);
+
+            if(redraw || previousPosition === null || previousPosition.x != roundedPosition.x || previousPosition.y != roundedPosition.y) {
+                previousPosition = roundedPosition;
+                that.context.save();
+                that.context.clearRect(0, 0, visibleSizeVector.x, visibleSizeVector.y);
+                that.context.drawImage(preRenderedCanvas, roundedPosition.x, roundedPosition.y);
+                that.context.restore();
             }
         };
 
         that.fadeOut = function(duration) {
             $(domElement).fadeOut(duration, function(){
                 parent.removeChild(domElement);
+            });
+        };
+
+        that.setZ = function(z) {
+            $(domElement).css({
+                'z-index': z,
             });
         };
 

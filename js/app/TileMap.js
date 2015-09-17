@@ -7,8 +7,6 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid'], function(Vector
         var tileGrid = null;
         /* the zero tile is always clear */
         tiles.push("");
-        var firstFrameDrawn = false;
-        that.redrawEachFrame = false;
         that.position = Vector();
         var gridSize = Vector();
 
@@ -33,9 +31,11 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid'], function(Vector
         };
 
         that.draw = function(context) {
+            var ret = false;
             tileGrid.each(function(cell, pos) {
-                if(cell.tile.visible) cell.tile.draw(context);
+                ret = ret || cell.tile.draw(context);
             });
+            return ret;
         };
 
         return that;
