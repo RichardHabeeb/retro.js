@@ -14,7 +14,7 @@ define(['app/Vector'], function(Vector) {
 
         that.draw = function(context) {
             /* Using Math.floor here gets a pretty significant performance increase. I am using a round hack that gets even better performance. */
-            context.drawImage(img, ~~ (0.5 + that.position.x), ~~ (0.5 + that.position.y));
+            context.drawImage(img, ~~that.position.x, ~~that.position.y);
         };
 
         img.onload = function() {

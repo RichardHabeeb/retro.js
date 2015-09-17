@@ -27,6 +27,10 @@ define(['jquery'], function ($) {
             'width': sizeVector.x * scale + 'px',
             'height': sizeVector.y * scale + 'px',
             'position': 'absolute',
+            'top': '50%',
+            'left': '50%',
+            'margin-left': -sizeVector.x * scale/2 + 'px',
+            'margin-top': -sizeVector.y * scale/2 + 'px',
         });
         parent.appendChild(domElement);
 
@@ -34,20 +38,30 @@ define(['jquery'], function ($) {
             sprites.push(sprite);
         };
 
-        that.draw = function (elapsedTimeSeconds) {
-            /* This seems ok here. We may need to selectively clear to improve performance. */
-            that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
+        that.removeSprite = function(sprite) {
+            var index = sprites.indexOf(sprite);
+            if(index > -1) sprites.splice(index, 1);
+        };
 
-            /* TileMaps and generic sprites should probably be on different layers but that it up to the developer. */
+        that.draw = function (elapsedTimeSeconds) {
+            /* if a TileMap is specified, the other sprites aren't drawn. */
             if(typeof that.tileMap !== "undefined") {
                 that.tileMap.draw(that.context);
             }
-
-            for(var i = 0; i < sprites.length; i++) {
-                if(sprites[i].visible(sizeVector)) {
-                    sprites[i].draw(that.context);
+            else {
+                that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
+                for(var i = 0; i < sprites.length; i++) {
+                    if(sprites[i].visible(sizeVector)) {
+                        sprites[i].draw(that.context, elapsedTimeSeconds);
+                    }
                 }
             }
+        };
+
+        that.fadeOut = function(duration) {
+            $(domElement).fadeOut(duration, function(){
+                parent.removeChild(domElement);
+            });
         };
 
         return that;

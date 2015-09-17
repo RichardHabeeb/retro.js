@@ -31,8 +31,8 @@ define(function (require) {
         3, 3, 3, 3, 3, 3, 3, 3,
         2, 2, 2, 2, 2, 2, 2, 2,
         2, 2, 2, 2, 2, 2, 2, 2,
-    ]);
-
+    ], Settings.numTiles);
+    
     layers[0].tileMap = tileMap;
 
     /* Animation loop */

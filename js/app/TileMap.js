@@ -1,12 +1,24 @@
-define(['app/Vector', 'app/Sprite', 'app/Settings'], function(Vector, Sprite, Settings) {
+define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid'], function(Vector, Sprite, Settings, Grid) {
     return function () {
         var that = {};
         /* contains each tile as a sprite. */
         var tiles = [];
         /* array of indecies into tiles */
-        var tileLayout = [];
+        var tileGrid = null;
         /* the zero tile is always clear */
         tiles.push(undefined);
+        var firstFrameDrawn = false;
+        that.redrawEachFrame = false;
+        that.position = Vector();
+        var gridSize = Vector();
+
+        function allTilesLoaded () {
+            var ret = true;
+            for(var i = 1; i < tiles.length; i++) {
+                ret = ret && tiles[i].size.x > 0;
+            }
+            return ret;
+        }
 
         /* push a generic tile into the pallete */
         that.addTile = function(src) {
@@ -19,21 +31,29 @@ define(['app/Vector', 'app/Sprite', 'app/Settings'], function(Vector, Sprite, Se
             tiles.push(spr);
         };
 
-        that.addLayout = function(grid) {
-            //TODO add size/type checking of grid
-            /* clone grid into tile layout */
-            tileLayout = grid.slice(0);
+        that.addLayout = function(tileLayout, size) {
+            gridSize = Vector(size.x, size.y);
+            tileGrid = Grid(gridSize);
+            tileGrid.each(function(cell, pos) {
+                cell.tile = tileLayout[pos.y * size.x + pos.x];
+            });
+            firstFrameDrawn = false;
         };
 
         that.draw = function(context) {
-            for(var y = 0; y < Settings.tilesPerColumn; y++) {
-                for(var x = 0; x < Settings.tilesPerRow; x++) {
-                    var tile = tiles[tileLayout[x + y * Settings.tilesPerRow]];
-                    tile.position.x = x * Settings.tileSize.x;
-                    tile.position.y = y * Settings.tileSize.y;
+            if(tileGrid === null || !that.redrawEachFrame && firstFrameDrawn) return;
+            if(!firstFrameDrawn) firstFrameDrawn = allTilesLoaded();
+
+            context.clearRect(that.position.x, that.position.y, gridSize.x * Settings.tileSize.x, gridSize.y * Settings.tileSize.x);
+            tileGrid.each(function(cell, pos) {
+                var tile = tiles[cell.tile];
+                if(typeof tile !== 'undefined') {
+                    tile.position.x = pos.x * Settings.tileSize.x;
+                    tile.position.y = pos.y * Settings.tileSize.y;
+                    if(tile.visible)
                     tile.draw(context);
                 }
-            }
+            });
         };
 
         return that;
