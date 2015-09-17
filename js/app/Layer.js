@@ -34,11 +34,11 @@ define(['jquery'], function ($) {
         });
         parent.appendChild(domElement);
 
-        that.attachSprite = function (sprite) {
+        that.attachDrawable = function (sprite) {
             sprites.push(sprite);
         };
 
-        that.removeSprite = function(sprite) {
+        that.removeDrawable = function(sprite) {
             var index = sprites.indexOf(sprite);
             if(index > -1) sprites.splice(index, 1);
         };
@@ -49,11 +49,9 @@ define(['jquery'], function ($) {
                 that.tileMap.draw(that.context);
             }
             else {
-                that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
+                //that.context.clearRect(0, 0, sizeVector.x, sizeVector.y);
                 for(var i = 0; i < sprites.length; i++) {
-                    if(sprites[i].visible(sizeVector)) {
-                        sprites[i].draw(that.context, elapsedTimeSeconds);
-                    }
+                    sprites[i].draw(that.context, elapsedTimeSeconds);
                 }
             }
         };

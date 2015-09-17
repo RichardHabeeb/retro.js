@@ -11,7 +11,7 @@ define(function () {
 
         that.x = setX;
         that.y = setY;
-
+        
         return that;
     };
 });
