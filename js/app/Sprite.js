@@ -1,10 +1,11 @@
-define(['app/Vector'], function(Vector) {
+define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
     return function(src, position, origin, frameWidth, framesPerSecond, onLoad) {
         var that = {};
         var playhead = 0;
         var keyFrame = 0;
         var img = new Image();
         var numFrames = 0;
+        var animationBounds = [];
         var pausedFramesPerSecond = 0;
         var destination = Vector();
         var velocity = Vector();
@@ -15,13 +16,31 @@ define(['app/Vector'], function(Vector) {
         var previousKeyFrame = keyFrame;
         var previousSize = Vector();
         var previousReverseState = false;
+        var previousAnimation = "";
         if(typeof framesPerSecond === "undefined") framesPerSecond = 0;
         if(typeof position === "undefined") position = Vector();
         if(typeof origin === "undefined") origin = Vector();
+        if(src !== "") AssetLoader.addAsset();
+        var hidden = false;
+        var showHidden = false;
+        var notHiddenYet = false;
 
+        that.currentAnimation = "default";
         that.position = Vector(position.x, position.y);
         that.size = Vector();
         that.reverse = false;
+
+        that.addAnimationBounds = function(key, sFrame, nFrames, setFramesPerSecond) {
+            animationBounds[key] = { start: sFrame, numFrames: nFrames, fps: setFramesPerSecond };
+        };
+
+        that.setAnimation = function() {
+
+        };
+
+        that.getFrameWidth = function() {
+            return frameWidth;
+        };
 
         that.visible = function(sizeVector) {
             return (
@@ -36,8 +55,17 @@ define(['app/Vector'], function(Vector) {
         };
 
         that.play = function () {
-            playhead = 0;
             if(pausedFramesPerSecond !== 0) framesPerSecond = pausedFramesPerSecond;
+        };
+
+        that.hide = function() {
+            notHiddenYet = true;
+            hidden = true;
+        };
+
+        that.show = function() {
+            if(hidden) showHidden = true;
+            hidden = false;
         };
 
         that.draw = function(context, elapsedTimeSeconds) {
@@ -54,20 +82,34 @@ define(['app/Vector'], function(Vector) {
                 }
             }
             playhead += elapsedTimeSeconds;
-            keyFrame = ~~(playhead * framesPerSecond) % numFrames;
+            keyFrame = animationBounds[that.currentAnimation].start + ~~(playhead * framesPerSecond) % animationBounds[that.currentAnimation].numFrames;
 
             var roundedPosition = Vector(~~that.position.x, ~~that.position.y);
             var roundedSize = Vector(~~that.size.x, ~~that.size.y);
+
+            if(hidden) {
+                if(notHiddenYet) {
+                    context.clearRect(previousPosition.x, previousPosition.y, that.size.x, that.size.y);
+                    notHiddenYet = false;
+                    return true;
+                }
+                return false;
+            }
             if(previousPosition.x != roundedPosition.x || previousPosition.y != roundedPosition.y ||
                 previousSize.x != roundedSize.x || previousSize.y != roundedSize.y ||
                 previousKeyFrame != keyFrame ||
-                previousReverseState != that.reverse) {
+                previousReverseState != that.reverse ||
+                showHidden ||
+                previousAnimation !== that.currentAnimation) {
 
-                context.clearRect(previousPosition.x, previousPosition.y, that.size.x, that.size.y);
+                //TODO rework this into a separate function (clear sprites before redrawing, this may add some gross collision stuff, alternative is time dimensional data structure).
+                if(!showHidden) context.clearRect(previousPosition.x, previousPosition.y, that.size.x, that.size.y);
                 previousPosition = roundedPosition;
                 previousKeyFrame = keyFrame;
                 previousReverseState = that.reverse;
                 previousSize = roundedSize;
+                previousAnimation = that.currentAnimation;
+                showHidden = false;
 
                 context.save();
                 var drawX = roundedPosition.x - origin.x;
@@ -97,7 +139,9 @@ define(['app/Vector'], function(Vector) {
             that.size.y = img.height;
             if(typeof frameWidth === "undefined") frameWidth = that.size.x;
             numFrames = Math.round(that.size.x / frameWidth);
+            that.addAnimationBounds("default", 0, numFrames, framesPerSecond);
             if(typeof onLoad !== "undefined") onLoad();
+            AssetLoader.loadAsset();
         };
 
 

@@ -8,12 +8,6 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
             layers[i].setZ(i);
         }
 
-        var jelly = Sprite("img/Jelly.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y));
-        layers[1].attachDrawable(jelly);
-
-        var jelly2 = Sprite("img/Jelly.png", Vector(6 * Settings.tileSize.x, 2 * Settings.tileSize.y));
-        layers[2].attachDrawable(jelly2);
-
         var tileMap = TileMap();
         tileMap.addTile("img/Brick 1.png");
         tileMap.addTile("img/Dirt 1.png");
@@ -32,6 +26,15 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
 
         layers[0].attachDrawable(tileMap);
 
+        that.attachSprite = function(sprite, layerNum) {
+            if(layerNum < 0 || layerNum >= Settings.numberOfLayers)
+            {
+                console.log("Invalid layer number.");
+                return;
+            }
+            layers[layerNum].attachDrawable(sprite);
+        };
+
         that.moveAll = function(offset) {
             for(var i = 0; i < layers.length; i++) {
                 layers[i].position.x = Math.min(0, Math.max(Settings.canvasSize.x - Settings.drawableAreaSize.x, layers[i].position.x + offset.x));
@@ -40,9 +43,6 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
         };
 
         that.draw = function(elapsedTimeSeconds) {
-            jelly2.position.x -= 10 * elapsedTimeSeconds;
-            that.moveAll(Vector(-20 * elapsedTimeSeconds, -20 * elapsedTimeSeconds));
-
             for(var i = 0; i < layers.length; i++) {
                 layers[i].draw(elapsedTimeSeconds);
             }

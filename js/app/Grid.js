@@ -38,6 +38,18 @@ define(['app/Vector', 'app/Cell', 'app/Direction'], function(Vector, Cell, Direc
         };
 
 
+        that.getRectangleOfCells = function(rect) {
+            var ret = [];
+            for(var y = rect.y; y < (rect.y + rect.height); y++) {
+                for(var x = rect.x; x < (rect.x + rect.width); x++) {
+                    var c = that.getCell(Vector(x, y));
+                    if(c !== null) ret.push(c);
+                }
+            }
+            return ret;
+        };
+
+
 
 
         return that;
