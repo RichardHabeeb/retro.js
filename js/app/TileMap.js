@@ -16,6 +16,10 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid'], function(Vector
             tiles.push(src);
         };
 
+        that.count = function() {
+            return tiles.length;
+        };
+
         /* add a predefined sprite into the pallete, useful for animated sprites */
         that.addSprite = function(spr) {
             tiles.push(spr);

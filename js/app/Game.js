@@ -21,11 +21,13 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
         keys.preventDefault(keyCodes.x);
         keys.startListener();
 
-        var jelly = Sprite("img/Jelly.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 32, 1);
-        map.attachSprite(jelly, 1);
+        var jelly2 = Sprite("img/Egg Cell clone.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 128, 1);
+        map.attachSprite(jelly2, 1);
+        var jelly = Sprite("img/Cumulus Cell Growth.png", Vector(3 * Settings.tileSize.x, 1 * Settings.tileSize.y), Vector(), 32, 1);
+        map.attachSprite(jelly, 2);
+        var jelly1 = Sprite("img/Cumulus Cell 15.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 32, 1);
+        map.attachSprite(jelly1, 2);
 
-        var jelly2 = Sprite("img/Jelly.png", Vector(6 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 32, 1);
-        map.attachSprite(jelly2, 2);
 
         // var bunbun = Entity(Sprite("img/BunBunFull.png", Vector(1 * Settings.tileSize.x, 1 * Settings.tileSize.y), Vector(), 32, 12), {
         //     idle: { start: 0, duration: 1 },
@@ -62,8 +64,8 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
             // map.checkCollision(bunbun);
             // map.checkBorderCollision(bunbun);
 
-            jelly2.position.y += 10 * elapsedTimeSeconds;
-            map.moveAll(Vector(-5 * elapsedTimeSeconds, -5 * elapsedTimeSeconds));
+            //jelly2.position.y += 10 * elapsedTimeSeconds;
+            //map.moveAll(Vector(-5 * elapsedTimeSeconds, -5 * elapsedTimeSeconds));
         };
 
         that.draw = function(elapsedTimeSeconds) {

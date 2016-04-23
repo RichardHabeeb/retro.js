@@ -1,28 +1,25 @@
 define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', 'app/Layer'], function(Vector, Sprite, Settings, Grid, TileMap, Layer) {
     return function() {
+        var i;
         var that = {};
 
         var layers = [];
-        for(var i = 0; i < Settings.numberOfLayers; i++) {
+        for(i = 0; i < Settings.numberOfLayers; i++) {
             layers.push(Layer(document.body, Settings.canvasSize, Settings.canvasScale, Settings.drawableAreaSize));
             layers[i].setZ(i);
         }
 
         var tileMap = TileMap();
-        tileMap.addTile("img/Brick 1.png");
-        tileMap.addTile("img/Dirt 1.png");
-        tileMap.addTile("img/Dirt into Brick.png");
+        tileMap.addTile("img/pink.png");
+        tileMap.addTile("img/blue.png");
 
-        tileMap.addLayout([
-            1, 1, 1, 1, 1, 1, 1, 1,
-            3, 3, 3, 3, 3, 3, 3, 3,
-            2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            3, 3, 3, 3, 3, 3, 3, 3,
-            2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2,
-        ], Settings.numTiles);
+        var layout = [];
+        for(i = 0; i < Settings.numTiles.x*Settings.numTiles.y; i++)
+        {
+            layout.push(Math.floor(Math.random()*(tileMap.count() - 1))+1);
+        }
+
+        tileMap.addLayout(layout, Settings.numTiles);
 
         layers[0].attachDrawable(tileMap);
 
