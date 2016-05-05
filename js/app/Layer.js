@@ -79,6 +79,15 @@ define(['jquery', 'app/Vector'], function ($, Vector) {
             });
         };
 
+        that.setClickHandler = function(handler) {
+            $(domElement).click(function(e) {
+                handler({
+                    x: ~~((e.pageX - $(domElement).offset().left)/4),
+                    y: ~~((e.pageY - $(domElement).offset().top)/4)
+                });
+            });
+        };
+
         return that;
     };
 });

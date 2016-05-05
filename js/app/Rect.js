@@ -27,9 +27,6 @@ define(['app/Vector'], function(Vector) {
         };
 
         that.overlappingWithRectangle = function(other) {
-            // return !(
-            //     that.x > (other.x + other.width) || other.x > (that.x + that.width) || // If one rectangle is on left side of other
-            //     that.y < (other.y + other.height) || other.y < (that.y + that.height)); // If one rectangle is above other
             // If one rectangle is on left side of other
              if (that.x >= (other.x + other.width) || other.x >= (that.x + that.width))
                  return false;
