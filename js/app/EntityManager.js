@@ -73,17 +73,21 @@ define(['app/Vector', 'app/Rect', 'app/Circle'], function (Vector, Rect, Circle)
             var right = circle.position.x + circle.radius;
 
             for(i = 0; i < entitiesXSorted.length; i++) {
-                if(entitiesXSorted[i].left > left) continue;
-                if(entitiesXSorted[i].left > right) break;
+                if(entitiesXSorted[i].left > right) continue;
+                //if(entitiesXSorted[i].left > right) break;
                 if(entitiesXSorted[i].hit.overlappingWithCircle(circle)) collisions.push(entitiesXSorted[i].ent);
             }
 
             return collisions;
         };
 
-        that.update = function() {
+        that.update = function(elapsedTimeSeconds) {
             updateBounds();
             sortEntities();
+
+            for(var i = 0; i < entitiesXSorted.length; i++) {
+                entitiesXSorted[i].ent.update(elapsedTimeSeconds);
+            }
         };
 
 

@@ -24,27 +24,33 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
 
         var eggCellSprite = Sprite("img/Egg Cell clone.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 128, 1);
         var eggCell = Entity(eggCellSprite);
+        eggCell.setBoundingCircle(Circle(Vector(64, 64), 64));
         map.attachSprite(eggCellSprite, 1);
         entityManager.add(eggCell);
 
-        var cumulusCell1Sprite = Sprite("img/Cumulus Cell Growth.png", Vector(3 * Settings.tileSize.x, 1 * Settings.tileSize.y), Vector(), 32, 1);
-        var cumulusCell1 = Entity(cumulusCell1Sprite);
+        var middlePoint = Vector(eggCell.getBoundingCircle().position.x, eggCell.getBoundingCircle().position.y);
+
+        var cumulusCell1Sprite = Sprite("img/Cumulus Cell Growth.png", Vector(middlePoint.x, middlePoint.y - 80), Vector(), 32, 1);
+        var cumulusCell1 = Entity(cumulusCell1Sprite, middlePoint);
+        cumulusCell1.setBoundingCircle(Circle(Vector(16, 16), 8));
         map.attachSprite(cumulusCell1Sprite, 2);
         entityManager.add(cumulusCell1);
+        cumulusCell1.appliedForce = Vector(0.1,0);
 
-        var cumulusCell2Sprite = Sprite("img/Cumulus Cell 15.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 32, 1);
-        var cumulusCell2 = Entity(cumulusCell2Sprite);
-        map.attachSprite(cumulusCell2Sprite, 2);
-        entityManager.add(cumulusCell2);
+        // var cumulusCell2Sprite = Sprite("img/Cumulus Cell 15.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 32, 1);
+        // var cumulusCell2 = Entity(cumulusCell2Sprite);
+        // cumulusCell1.setBoundingCircle(Circle(Vector(16, 16), 8));
+        // map.attachSprite(cumulusCell2Sprite, 2);
+        // entityManager.add(cumulusCell2);
 
         map.click(function(e) {
             //alert((e.x) + ' , ' + (e.y));
-            console.log(entityManager.getEntitiesInRadius(Circle(Vector(e.x, e.y), 10)));
+            console.log(entityManager.getEntitiesInRadius(Circle(Vector(e.x, e.y), 1)));
         });
 
 
         that.update = function(elapsedTimeSeconds) {
-            entityManager.update();
+            entityManager.update(elapsedTimeSeconds);
         };
 
         that.draw = function(elapsedTimeSeconds) {
