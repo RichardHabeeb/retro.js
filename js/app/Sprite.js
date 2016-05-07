@@ -6,7 +6,6 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
         var img = new Image();
         var numFrames = 0;
         var animationBounds = [];
-        var pausedFramesPerSecond = 0;
         var destination = Vector();
         var velocity = Vector();
         var elapsedAnimationTimeSeconds = 0;
@@ -24,6 +23,7 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
         var hidden = false;
         var showHidden = false;
         var notHiddenYet = false;
+        var paused = false;
 
         that.currentAnimation = "default";
         that.position = Vector(position.x, position.y);
@@ -38,6 +38,10 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
 
         };
 
+        that.setLoopHandler = function(h) {
+            onLoop = h;
+        };
+
         that.getFrameWidth = function() {
             return frameWidth;
         };
@@ -49,8 +53,9 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
         };
 
         that.pause = function() {
-            if(framesPerSecond !== 0) pausedFramesPerSecond = framesPerSecond;
-            framesPerSecond = 0;
+            paused = true;
+            //if(framesPerSecond !== 0) pausedFramesPerSecond = framesPerSecond;
+            //framesPerSecond = 0;
         };
 
         that.reset = function() {
@@ -59,7 +64,8 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
         };
 
         that.play = function () {
-            if(pausedFramesPerSecond !== 0) framesPerSecond = pausedFramesPerSecond;
+            //if(pausedFramesPerSecond !== 0) framesPerSecond = pausedFramesPerSecond;
+            paused = false;
         };
 
         that.hide = function() {
@@ -85,11 +91,11 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
                     animationComplete();
                 }
             }
-            playhead += elapsedTimeSeconds;
+            if(!paused) playhead += elapsedTimeSeconds;
             keyFrame = animationBounds[that.currentAnimation].start + ~~(playhead * framesPerSecond) % animationBounds[that.currentAnimation].numFrames;
 
-            if(typeof(onLoop) !== "undefined" && keyFrame === animationBounds[that.currentAnimation].numFrames - 1) {
-                onLoop();
+            if(!paused && typeof(onLoop) !== "undefined" && keyFrame === (animationBounds[that.currentAnimation].start + animationBounds[that.currentAnimation].numFrames - 1)) {
+                onLoop(that);
             }
 
             var roundedPosition = Vector(~~that.position.x, ~~that.position.y);
@@ -111,7 +117,7 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
                 previousAnimation !== that.currentAnimation) {
 
                 //TODO rework this into a separate function (clear sprites before redrawing, this may add some gross collision stuff, alternative is time dimensional data structure).
-                if(!showHidden) context.clearRect(previousPosition.x, previousPosition.y, that.size.x, that.size.y);
+                if(!showHidden) context.clearRect(previousPosition.x, previousPosition.y, frameWidth, that.size.y);
                 previousPosition = roundedPosition;
                 previousKeyFrame = keyFrame;
                 previousReverseState = that.reverse;

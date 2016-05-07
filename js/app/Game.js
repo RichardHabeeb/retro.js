@@ -27,11 +27,40 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
 
         var middlePoint = Vector(eggCellSprite.position.x + 64, eggCellSprite.position.y + 64);
 
-        var cumulusCell1Sprite = Sprite("img/full_cumulus.png", Vector(middlePoint.x, middlePoint.y - 78), Vector(), 32, 1);
-        var cumulusCell1 = Entity(cumulusCell1Sprite, middlePoint, 15);
-        cumulusCell1.setBoundingCircle(Circle(Vector(16, 16), 8));
-        map.attachSprite(cumulusCell1Sprite, 2);
-        entityManager.add(cumulusCell1);
+        var cumulusCells = [];
+
+
+
+
+
+
+        var addCumulusCell = function(theta, onLoop) {
+            var arm = Vector(0, 1);
+            arm.setAngle(theta);
+            arm.setLength(64);
+            var moveTo = Vector(middlePoint.x + arm.x, middlePoint.y + arm.y);
+            var cumulusCellSprite = Sprite("img/full_cumulus.png", Vector(moveTo.x - 16, moveTo.y - 16), Vector(), 32, 0.05);
+            cumulusCellSprite.setLoopHandler(onLoop);
+            var cumulusCell = Entity(cumulusCellSprite, middlePoint, 15);
+            cumulusCell.setBoundingCircle(Circle(Vector(16, 16), 8));
+            cumulusCell.targetRadialAngle = theta;
+            map.attachSprite(cumulusCellSprite, 2);
+            entityManager.add(cumulusCell);
+            cumulusCells.push(cumulusCell);
+            return cumulusCell;
+        };
+
+        var cumulusCellSpawn = function(old) {
+            old.pause();
+            //old.reset();
+        };
+
+
+        for(var i = 0; i < 3; i++) {
+            var cell = addCumulusCell(Math.random() * 2 * Math.PI, cumulusCellSpawn);
+        }
+
+
 
         var commandMoveSprite = Sprite("img/Command Move.png", Vector(-10, -10), Vector(), 8, 24, function() {}, function() {
             commandMoveSprite.position.x = -10;
