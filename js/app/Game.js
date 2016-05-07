@@ -23,29 +23,51 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
         keys.startListener();
 
         var eggCellSprite = Sprite("img/Egg Cell clone.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 128, 1);
-        var eggCell = Entity(eggCellSprite);
-        eggCell.setBoundingCircle(Circle(Vector(64, 64), 64));
         map.attachSprite(eggCellSprite, 1);
-        entityManager.add(eggCell);
 
-        var middlePoint = Vector(eggCell.getBoundingCircle().position.x, eggCell.getBoundingCircle().position.y);
+        var middlePoint = Vector(eggCellSprite.position.x + 64, eggCellSprite.position.y + 64);
 
-        var cumulusCell1Sprite = Sprite("img/cumulus.png", Vector(middlePoint.x, middlePoint.y - 78), Vector(), 32, 1);
+        var cumulusCell1Sprite = Sprite("img/full_cumulus.png", Vector(middlePoint.x, middlePoint.y - 78), Vector(), 32, 1);
         var cumulusCell1 = Entity(cumulusCell1Sprite, middlePoint, 15);
         cumulusCell1.setBoundingCircle(Circle(Vector(16, 16), 8));
         map.attachSprite(cumulusCell1Sprite, 2);
         entityManager.add(cumulusCell1);
-        cumulusCell1.appliedForce = Vector(-0.1,0);
 
-        // var cumulusCell2Sprite = Sprite("img/Cumulus Cell 15.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 32, 1);
-        // var cumulusCell2 = Entity(cumulusCell2Sprite);
-        // cumulusCell1.setBoundingCircle(Circle(Vector(16, 16), 8));
-        // map.attachSprite(cumulusCell2Sprite, 2);
-        // entityManager.add(cumulusCell2);
+        var commandMoveSprite = Sprite("img/Command Move.png", Vector(-10, -10), Vector(), 8, 24, function() {}, function() {
+            commandMoveSprite.position.x = -10;
+            commandMoveSprite.position.y = -10;
+            commandMoveSprite.pause();
+        });
+        map.attachSprite(commandMoveSprite, 3);
+        commandMoveSprite.pause();
 
-        map.click(function(e) {
-            //alert((e.x) + ' , ' + (e.y));
-            console.log(entityManager.getEntitiesInRadius(Circle(Vector(e.x, e.y), 1)));
+        map.click({
+            left:function(e) {
+                entityManager.each(function(e) {
+                    e.selected = false;
+                });
+
+                entitiesClicked = entityManager.getEntitiesInRadius(Circle(Vector(e.x, e.y), 1));
+                for(var i = 0; i < entitiesClicked.length; i++) {
+                    entitiesClicked[i].selected = true;
+                }
+            },
+            right: function(e) {
+                var arm = Vector(e.x - middlePoint.x, e.y - middlePoint.y);
+                arm.setLength(64);
+                var moveTo = Vector(middlePoint.x + arm.x, middlePoint.y + arm.y);
+
+                commandMoveSprite.position.x = moveTo.x - commandMoveSprite.getFrameWidth() / 2;
+                commandMoveSprite.position.y = moveTo.y - commandMoveSprite.size.y;
+                commandMoveSprite.play();
+                commandMoveSprite.reset();
+
+                entityManager.each(function(e) {
+                    if(e.selected) {
+                        e.targetRadialAngle = arm.getAngle();
+                    }
+                });
+            }
         });
 
 

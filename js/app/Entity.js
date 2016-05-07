@@ -6,11 +6,14 @@ define(['app/Vector', 'app/Circle', 'app/Settings'], function(Vector, Circle, Se
         var angularVelocity = 0;
         that.mass = 1;
         that.topSpeed = 150;
-        that.topAngularSpeed = 1.0;
+        that.topAngularSpeed = 0.5;
         that.appliedForce = Vector(); //todo protect
+        that.selected = false;
+        that.targetRadialAngle = 0;
         if(typeof(rotationBounds) !== "undefined" && rotationBounds > 0) {
             for(var i = 0; i < 360/rotationBounds; i++) {
                 sprite.addAnimationBounds(i*rotationBounds, i*4, 4, 1);
+                sprite.addAnimationBounds("selected_" + i*rotationBounds, 4*(360/rotationBounds + i), 4, 1);
             }
             sprite.currentAnimation = 0;
         }
@@ -51,6 +54,21 @@ define(['app/Vector', 'app/Circle', 'app/Settings'], function(Vector, Circle, Se
                 if(typeof(rotationBounds) !== "undefined" && rotationBounds > 0) {
                     //todo cleanup
                     sprite.currentAnimation = (Math.round((180 - 180 * r.getAngle() / Math.PI) / rotationBounds) * rotationBounds + 90) % 360;
+                    if(that.selected) {
+                        sprite.currentAnimation = "selected_" + sprite.currentAnimation;
+                    }
+                }
+
+                var dist1 = (r.getAngle() - that.targetRadialAngle) % (2 * Math.PI);
+                var dist2 = (that.targetRadialAngle - r.getAngle()) % (2 * Math.PI);
+                if(dist1 < 0) dist1 += 2 * Math.PI;
+                if(dist2 < 0) dist2 += 2 * Math.PI;
+                if(Math.abs(dist1) > Math.abs(dist2)) {
+                    that.appliedForce = Vector(-r.y,r.x);
+                    that.appliedForce.setLength(1);
+                } else {
+                    that.appliedForce = Vector(r.y,-r.x);
+                    that.appliedForce.setLength(1);
                 }
             }
             else {

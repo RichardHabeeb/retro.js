@@ -90,6 +90,12 @@ define(['app/Vector', 'app/Rect', 'app/Circle'], function (Vector, Rect, Circle)
             }
         };
 
+        that.each = function(operation) {
+            for(var i = 0; i < entitiesXSorted.length; i++) {
+                operation(entitiesXSorted[i].ent);
+            }
+        };
+
 
 
         return that;

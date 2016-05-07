@@ -79,12 +79,23 @@ define(['jquery', 'app/Vector'], function ($, Vector) {
             });
         };
 
-        that.setClickHandler = function(handler) {
-            $(domElement).click(function(e) {
-                handler({
-                    x: ~~((e.pageX - $(domElement).offset().left)/4),
-                    y: ~~((e.pageY - $(domElement).offset().top)/4)
-                });
+        that.setClickHandlers = function(leftHandler, rightHandler) {
+            $(domElement).mousedown(function(e) {
+                switch(e.which) {
+                    case 1:
+                        leftHandler({
+                            x: ~~((e.pageX - $(domElement).offset().left)/4),
+                            y: ~~((e.pageY - $(domElement).offset().top)/4)
+                        });
+                        break;
+                    case 3:
+                        rightHandler({
+                            x: ~~((e.pageX - $(domElement).offset().left)/4),
+                            y: ~~((e.pageY - $(domElement).offset().top)/4)
+                        });
+                        break;
+                }
+
             });
         };
 

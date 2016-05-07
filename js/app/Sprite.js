@@ -1,5 +1,5 @@
 define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
-    return function(src, position, origin, frameWidth, framesPerSecond, onLoad) {
+    return function(src, position, origin, frameWidth, framesPerSecond, onLoad, onLoop) {
         var that = {};
         var playhead = 0;
         var keyFrame = 0;
@@ -50,8 +50,12 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
 
         that.pause = function() {
             if(framesPerSecond !== 0) pausedFramesPerSecond = framesPerSecond;
-            playhead = 0;
             framesPerSecond = 0;
+        };
+
+        that.reset = function() {
+            playhead = 0;
+            keyFrame = animationBounds[that.currentAnimation].start;
         };
 
         that.play = function () {
@@ -83,6 +87,10 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
             }
             playhead += elapsedTimeSeconds;
             keyFrame = animationBounds[that.currentAnimation].start + ~~(playhead * framesPerSecond) % animationBounds[that.currentAnimation].numFrames;
+
+            if(typeof(onLoop) !== "undefined" && keyFrame === animationBounds[that.currentAnimation].numFrames - 1) {
+                onLoop();
+            }
 
             var roundedPosition = Vector(~~that.position.x, ~~that.position.y);
             var roundedSize = Vector(~~that.size.x, ~~that.size.y);

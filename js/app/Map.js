@@ -45,8 +45,8 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
             }
         };
 
-        that.click = function(handler) {
-            layers[layers.length - 1].setClickHandler(handler);
+        that.click = function(handlers) {
+            layers[layers.length - 1].setClickHandlers(handlers.left, handlers.right);
         };
 
         return that;
