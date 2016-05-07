@@ -1,15 +1,14 @@
 define(['app/Vector'], function(Vector) {
-    return function(setPosition, setRadius) {
-        var that = {};
+    function Circle(setPosition, setRadius) {
 
-        that.position = Vector(setPosition.x, setPosition.y);
-        that.radius = setRadius;
+        this.position = new Vector(setPosition.x, setPosition.y);
+        this.radius = setRadius;
+    }
 
-        that.overlappingWithCircle = function(other) {
-            return(Math.sqrt((that.position.x - other.position.x)*(that.position.x - other.position.x) + (that.position.y - other.position.y)*(that.position.y - other.position.y)) <= (that.radius + other.radius));
-        };
-
-
-        return that;
+    Circle.prototype.overlappingWithCircle = function(other) {
+        return(Math.sqrt((this.position.x - other.position.x)*(this.position.x - other.position.x) + (this.position.y - other.position.y)*(this.position.y - other.position.y)) <= (this.radius + other.radius));
     };
+
+
+    return Circle;
 });

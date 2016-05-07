@@ -7,7 +7,7 @@ define(['jquery', 'app/Vector'], function ($, Vector) {
         var sprites = [];
         var previousPosition = null;
 
-        that.position = Vector();
+        that.position = new Vector();
         that.context = domElement.getContext('2d');
 
         /* Setup scaled canvas styling and let the browser choose the acceptable method. */
@@ -52,19 +52,16 @@ define(['jquery', 'app/Vector'], function ($, Vector) {
         };
 
         that.draw = function (elapsedTimeSeconds) {
-            var redraw = false;
-            for(var i = 0; i < sprites.length; i++) {
-                redraw = redraw || sprites[i].draw(preRenderedContext, elapsedTimeSeconds);
-            }
-            var roundedPosition = Vector(~~that.position.x, ~~that.position.y);
+            //preRenderedContext.clearRect(0, 0, visibleSizeVector.x, visibleSizeVector.y);
 
-            if(redraw || previousPosition === null || previousPosition.x != roundedPosition.x || previousPosition.y != roundedPosition.y) {
-                previousPosition = roundedPosition;
-                that.context.save();
-                that.context.clearRect(0, 0, visibleSizeVector.x, visibleSizeVector.y);
-                that.context.drawImage(preRenderedCanvas, roundedPosition.x, roundedPosition.y);
-                that.context.restore();
+            //var roundedPosition = new Vector(~~that.position.x, ~~that.position.y);
+            that.context.save();
+            that.context.clearRect(0, 0, visibleSizeVector.x, visibleSizeVector.y);
+            for(var i = 0; i < sprites.length; i++) {
+                sprites[i].draw(that.context, elapsedTimeSeconds);
             }
+            //that.context.drawImage(preRenderedCanvas, roundedPosition.x, roundedPosition.y);
+            that.context.restore();
         };
 
         that.fadeOut = function(duration) {

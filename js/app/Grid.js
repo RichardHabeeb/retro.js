@@ -1,7 +1,7 @@
 define(['app/Vector', 'app/Cell', 'app/Direction'], function(Vector, Cell, Direction) {
     return function(setGridSize) {
-        if(typeof setGridSize === "undefined") gridSize = Vector();
-        else gridSize = Vector(setGridSize.x, setGridSize.y);
+        if(typeof setGridSize === "undefined") gridSize = new Vector();
+        else gridSize = new Vector(setGridSize.x, setGridSize.y);
         var that = {};
         var gridCells = [];
 
@@ -32,7 +32,7 @@ define(['app/Vector', 'app/Cell', 'app/Direction'], function(Vector, Cell, Direc
         that.each = function(lambda) {
             for(var y = 0; y < gridSize.y; y++) {
                 for(var x = 0; x < gridSize.x; x++) {
-                    lambda(gridCells[y * gridSize.x + x], Vector(x, y));
+                    lambda(gridCells[y * gridSize.x + x], new Vector(x, y));
                 }
             }
         };
@@ -42,7 +42,7 @@ define(['app/Vector', 'app/Cell', 'app/Direction'], function(Vector, Cell, Direc
             var ret = [];
             for(var y = rect.y; y < (rect.y + rect.height); y++) {
                 for(var x = rect.x; x < (rect.x + rect.width); x++) {
-                    var c = that.getCell(Vector(x, y));
+                    var c = that.getCell(new Vector(x, y));
                     if(c !== null) ret.push(c);
                 }
             }

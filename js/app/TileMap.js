@@ -7,8 +7,8 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid'], function(Vector
         var tileGrid = null;
         /* the zero tile is always clear */
         tiles.push("");
-        that.position = Vector();
-        var gridSize = Vector();
+        that.position = new Vector();
+        var gridSize = new Vector();
 
         /* push a generic tile into the pallete */
         that.addTile = function(src) {
@@ -26,10 +26,10 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid'], function(Vector
         };
 
         that.addLayout = function(tileLayout, size) {
-            gridSize = Vector(size.x, size.y);
+            gridSize = new Vector(size.x, size.y);
             tileGrid = Grid(gridSize);
             tileGrid.each(function(cell, pos) {
-                cell.tile = Sprite(tiles[tileLayout[pos.y * size.x + pos.x]], Vector(pos.x * Settings.tileSize.x, pos.y * Settings.tileSize.y));
+                cell.tile = Sprite(tiles[tileLayout[pos.y * size.x + pos.x]], new Vector(pos.x * Settings.tileSize.x, pos.y * Settings.tileSize.y));
             });
             firstFrameDrawn = false;
         };

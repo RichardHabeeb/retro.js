@@ -39,7 +39,7 @@ define(['app/Vector'], function(Vector) {
         };
 
         that.getOverlapOffset = function(other) {
-            var ret = Vector();
+            var ret = new Vector();
             if(that.overlappingWithRectangle(other)) {
                 var distLeft = other.x - (that.x + that.width);
                 var distRight = (other.x + other.width) - that.x;

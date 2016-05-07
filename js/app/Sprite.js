@@ -6,19 +6,19 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
         var img = new Image();
         var numFrames = 0;
         var animationBounds = [];
-        var destination = Vector();
-        var velocity = Vector();
+        var destination = new Vector();
+        var velocity = new Vector();
         var elapsedAnimationTimeSeconds = 0;
         var animationTimeSeconds = 0;
         var animationComplete = function () {};
-        var previousPosition = Vector(position.x, position.y);
+        var previousPosition = new Vector(position.x, position.y);
         var previousKeyFrame = keyFrame;
-        var previousSize = Vector();
+        var previousSize = new Vector();
         var previousReverseState = false;
         var previousAnimation = "";
         if(typeof framesPerSecond === "undefined") framesPerSecond = 0;
-        if(typeof position === "undefined") position = Vector();
-        if(typeof origin === "undefined") origin = Vector();
+        if(typeof position === "undefined") position = new Vector();
+        if(typeof origin === "undefined") origin = new Vector();
         if(src !== "") AssetLoader.addAsset();
         var hidden = false;
         var showHidden = false;
@@ -26,8 +26,8 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
         var paused = false;
 
         that.currentAnimation = "default";
-        that.position = Vector(position.x, position.y);
-        that.size = Vector();
+        that.position = new Vector(position.x, position.y);
+        that.size = new Vector();
         that.reverse = false;
 
         that.addAnimationBounds = function(key, sFrame, nFrames, setFramesPerSecond) {
@@ -98,26 +98,11 @@ define(['app/Vector', 'app/AssetLoader'], function(Vector, AssetLoader) {
                 onLoop(that);
             }
 
-            var roundedPosition = Vector(~~that.position.x, ~~that.position.y);
-            var roundedSize = Vector(~~that.size.x, ~~that.size.y);
+            var roundedPosition = new Vector(~~that.position.x, ~~that.position.y);
+            var roundedSize = new Vector(~~that.size.x, ~~that.size.y);
 
-            if(hidden) {
-                if(notHiddenYet) {
-                    context.clearRect(previousPosition.x, previousPosition.y, that.size.x, that.size.y);
-                    notHiddenYet = false;
-                    return true;
-                }
-                return false;
-            }
-            if(previousPosition.x != roundedPosition.x || previousPosition.y != roundedPosition.y ||
-                previousSize.x != roundedSize.x || previousSize.y != roundedSize.y ||
-                previousKeyFrame != keyFrame ||
-                previousReverseState != that.reverse ||
-                showHidden ||
-                previousAnimation !== that.currentAnimation) {
+            if(!hidden) {
 
-                //TODO rework this into a separate function (clear sprites before redrawing, this may add some gross collision stuff, alternative is time dimensional data structure).
-                if(!showHidden) context.clearRect(previousPosition.x, previousPosition.y, frameWidth, that.size.y);
                 previousPosition = roundedPosition;
                 previousKeyFrame = keyFrame;
                 previousReverseState = that.reverse;

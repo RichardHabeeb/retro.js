@@ -22,10 +22,10 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
         keys.preventDefault(keyCodes.x);
         keys.startListener();
 
-        var eggCellSprite = Sprite("img/Egg Cell clone.png", Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), Vector(), 128, 1);
+        var eggCellSprite = Sprite("img/Egg Cell clone.png", new Vector(2 * Settings.tileSize.x, 2 * Settings.tileSize.y), new Vector(), 128, 1);
         map.attachSprite(eggCellSprite, 1);
 
-        var middlePoint = Vector(eggCellSprite.position.x + 64, eggCellSprite.position.y + 64);
+        var middlePoint = new Vector(eggCellSprite.position.x + 64, eggCellSprite.position.y + 64);
 
         var cumulusCells = [];
 
@@ -35,14 +35,14 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
 
 
         var addCumulusCell = function(theta, onLoop) {
-            var arm = Vector(0, 1);
+            var arm = new Vector(0, 1);
             arm.setAngle(theta);
             arm.setLength(64);
-            var moveTo = Vector(middlePoint.x + arm.x, middlePoint.y + arm.y);
-            var cumulusCellSprite = Sprite("img/full_cumulus.png", Vector(moveTo.x - 16, moveTo.y - 16), Vector(), 32, 0.05);
+            var moveTo = new Vector(middlePoint.x + arm.x, middlePoint.y + arm.y);
+            var cumulusCellSprite = Sprite("img/full_cumulus.png", new Vector(moveTo.x - 16, moveTo.y - 16), new Vector(), 32, 0.05);
             cumulusCellSprite.setLoopHandler(onLoop);
             var cumulusCell = Entity(cumulusCellSprite, middlePoint, 15);
-            cumulusCell.setBoundingCircle(Circle(Vector(16, 16), 8));
+            cumulusCell.setBoundingCircle(new Circle(new Vector(16, 16), 8));
             cumulusCell.targetRadialAngle = theta;
             map.attachSprite(cumulusCellSprite, 2);
             entityManager.add(cumulusCell);
@@ -62,7 +62,7 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
 
 
 
-        var commandMoveSprite = Sprite("img/Command Move.png", Vector(-10, -10), Vector(), 8, 24, function() {}, function() {
+        var commandMoveSprite = Sprite("img/Command Move.png", new Vector(-10, -10), new Vector(), 8, 24, function() {}, function() {
             commandMoveSprite.position.x = -10;
             commandMoveSprite.position.y = -10;
             commandMoveSprite.pause();
@@ -76,15 +76,15 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Keyboard', 'app/Map', '
                     e.selected = false;
                 });
 
-                entitiesClicked = entityManager.getEntitiesInRadius(Circle(Vector(e.x, e.y), 1));
+                entitiesClicked = entityManager.getEntitiesInRadius(new Circle(new Vector(e.x, e.y), 1));
                 for(var i = 0; i < entitiesClicked.length; i++) {
                     entitiesClicked[i].selected = true;
                 }
             },
             right: function(e) {
-                var arm = Vector(e.x - middlePoint.x, e.y - middlePoint.y);
+                var arm = new Vector(e.x - middlePoint.x, e.y - middlePoint.y);
                 arm.setLength(64);
-                var moveTo = Vector(middlePoint.x + arm.x, middlePoint.y + arm.y);
+                var moveTo = new Vector(middlePoint.x + arm.x, middlePoint.y + arm.y);
 
                 commandMoveSprite.position.x = moveTo.x - commandMoveSprite.getFrameWidth() / 2;
                 commandMoveSprite.position.y = moveTo.y - commandMoveSprite.size.y;

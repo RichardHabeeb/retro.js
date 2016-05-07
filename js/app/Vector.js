@@ -1,6 +1,5 @@
 define(function () {
-    return function (setX, setY) {
-        var that = {};
+    function Vector (setX, setY) {
         if (typeof setX === 'undefined') {
             setX = 0;
         }
@@ -9,30 +8,30 @@ define(function () {
             setY = 0;
         }
 
-        that.x = setX;
-        that.y = setY;
+        this.x = setX;
+        this.y = setY;
+    }
 
-        that.getLength = function() {
-            return Math.sqrt((that.x)*(that.x) + (that.y)*(that.y));
-        };
-
-        that.getAngle = function() {
-            return Math.atan2(that.y, that.x);
-        };
-
-        that.setLength = function(len) {
-            var old = that.getLength();
-            if(old === 0) old = 1;
-            that.x = that.x * len / old;
-            that.y = that.y * len / old;
-        };
-
-        that.setAngle = function(theta) {
-            var old = that.getLength();
-            that.x = old * Math.cos(theta);
-            that.y = old * Math.sin(theta);
-        };
-
-        return that;
+    Vector.prototype.getLength = function() {
+        return Math.sqrt((this.x)*(this.x) + (this.y)*(this.y));
     };
+
+    Vector.prototype.getAngle = function() {
+        return Math.atan2(this.y, this.x);
+    };
+
+    Vector.prototype.setLength = function(len) {
+        var old = this.getLength();
+        if(old === 0) old = 1;
+        this.x = this.x * len / old;
+        this.y = this.y * len / old;
+    };
+
+    Vector.prototype.setAngle = function(theta) {
+        var old = this.getLength();
+        this.x = old * Math.cos(theta);
+        this.y = old * Math.sin(theta);
+    };
+
+    return Vector;
 });
