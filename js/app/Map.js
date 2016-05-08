@@ -32,6 +32,10 @@ define(['app/Vector', 'app/Sprite', 'app/Settings', 'app/Grid', 'app/TileMap', '
             layers[layerNum].attachDrawable(sprite);
         };
 
+        that.getLayer = function(i) {
+            return layers[i];
+        };
+
         that.moveAll = function(offset) {
             for(var i = 0; i < layers.length; i++) {
                 layers[i].position.x = Math.min(0, Math.max(Settings.canvasSize.x - Settings.drawableAreaSize.x, layers[i].position.x + offset.x));
